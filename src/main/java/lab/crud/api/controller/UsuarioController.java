@@ -1,6 +1,6 @@
 package lab.crud.api.controller;
 
-import java.time.LocalDate;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,110 +15,111 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import lab.crud.api.model.Produto;
-import lab.crud.api.repository.ProdutoRepository;
+import lab.crud.api.model.Usuario;
+import lab.crud.api.repository.UsuarioRepository;
 
 @RestController
-public class ProdutoController {
+public class UsuarioController {
 
-	
+		
 	@Autowired
-	private ProdutoRepository repository;
+	private UsuarioRepository repository;
+		
+		
+		//curl -X POST http://localhost:8081/produtos -H "Content-Type: application/json; Charset=utf-8" -d @produto-pao.json
 	
-	
-	//curl -X POST http://localhost:8081/produtos -H "Content-Type: application/json; Charset=utf-8" -d @produto-pao.json
-	
-	//@RequestMapping(method = RequestMethod.POST, path = "/produto")
-	@PostMapping("/produtos")
-	public ResponseEntity<Produto> novo(
-			@RequestBody Produto produto) {
+	//@RequestMapping(method = RequestMethod.POST, path = "/usuario")
+	@PostMapping("/Usuario")
+	public ResponseEntity<Usuario> novo(
+			@RequestBody Usuario usuario) {
 		
+
 		
-		produto.setDataCriacao(LocalDate.now());
+		repository.save(usuario);
 		
-		repository.save(produto);
-		
-		System.out.println(produto.toString());
+		System.out.println(usuario.toString());
 		
 		
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
-				.body(produto);
+				.body(usuario);
 	}
 	
-	@GetMapping("/produtos")
-	public ResponseEntity<Iterable<Produto>> obterTodos() {
+	@GetMapping("/usuario")
+	public ResponseEntity<Iterable<Usuario>> obterTodos() {
 		
-		List<Produto> listProdutos = repository.findByNomeLike("%Pão%");
+		List<Usuario> listUsuario = repository.findByNomeLike("");
 		
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(repository.findAll());
 	}
 		
-		@GetMapping("/produtos/{id}")
+		@GetMapping("/usuario/{id}")
 		 public ResponseEntity<Object> buscarPorId(@PathVariable Integer id) {
 
 		  // Alt + SHIFT + L -> extrai variável local
-		  Optional<Produto> produtoEncontrado = repository.findById(id);
+		  Optional<Usuario> usuarioEncontrado = repository.findById(id);
 
 		  // Empty = Vazio
-		  if (produtoEncontrado.isEmpty()) {
+		  if (usuarioEncontrado.isEmpty()) {
 		   return ResponseEntity
 		     .status(HttpStatus.NOT_FOUND)
-		     .body("Produto não encontrado");
+		     .body("Usuario não encontrado");
 		  }
 
 		  return ResponseEntity
 		    .status(HttpStatus.OK)
-		    .body(produtoEncontrado.get());
+		    .body(usuarioEncontrado.get());
 		 }
 		 
 		 //Observação: para métodos que não sejam o GET e o POST é necessário colocar o -X(menos xis maiúsculo)
 		 //curl -X PUT http://localhost:8080/produtos/1 -H "Content-Type: application/json; Charset=utf-8" -d @produto-mortadela2.json 
-		 @PutMapping("/produtos/{id}")
-		 public ResponseEntity<Object> atualizarProduto(
+		 @PutMapping("/usuario/{id}")
+		 public ResponseEntity<Object> atualizarUsuario(
 		   @PathVariable Integer id,
-		   @RequestBody Produto prod) {
+		   @RequestBody Usuario user) {
 		  
-		  Optional<Produto> produto = repository.findById(id);
+		  Optional<Usuario> usuario = repository.findById(id);
 		  
-		  if (produto.isEmpty()) {
+		  if (usuario.isEmpty()) {
 
 		   return ResponseEntity
 		     .status(HttpStatus.NOT_FOUND)
-		     .body("Produto não encontrado!");
+		     .body("Usuario não encontrado!");
 		  }
 		  
-		  prod.setId(id);
-		  prod.setDataCriacao(produto.get().getDataCriacao());
-		  repository.save(prod);
+		  user.setId(id);
+		  user.setDataCriacao(usuario.get().getDataCriacao());
+		  repository.save(user);
 		  
 		  return ResponseEntity
 		    .status(HttpStatus.OK)
-		    .body("Produto atualizado com sucesso!");
+		    .body("Usuario atualizado com sucesso!");
 		 } 
 		 
 
 		 //curl -X DELETE http://localhost:8080/produtos/1
-		 @DeleteMapping("/produtos/{id}")
-		 public ResponseEntity<Object> apagarProduto(
+		 @DeleteMapping("/usuario/{id}")
+		 public ResponseEntity<Object> apagarUsuario(
 				 @PathVariable Integer id) {
 			 
-			 Optional<Produto> produto = repository.findById(id);
-			 if (produto.isEmpty()) {
+			 Optional<Usuario> usuario = repository.findById(id);
+			 if (usuario.isEmpty()) {
 				 
 				 return ResponseEntity
 						 .status (HttpStatus.NOT_FOUND)
-						 .body("Produto não encontrado!");
+						 .body("Usuario não encontrado!");
 			 }
 			 
-			 Produto prod = produto.get();
-			 repository.delete(prod);
+			 Usuario user = usuario.get();
+			 repository.delete(user);
 			 
 			 return ResponseEntity
 					 .status(HttpStatus.OK)
-					 .body("Produto apagado com sucesso");
+					 .body("Usuario apagado com sucesso");
 		 }
-	}
+	
 
+	
+}
